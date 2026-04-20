@@ -328,7 +328,7 @@ function escAttr(str) {
 }
 
 function formatTime(isoStr) {
-  const date = new Date(isoStr);
+  const date = new Date(isoStr.replace(' ', 'T') + 'Z');
   const now = new Date();
   const diff = (now - date) / 1000;
 

@@ -1,0 +1,11 @@
+node_modules/
+database.sqlite
+database.sqlite-shm
+database.sqlite-wal
+sessions.sqlite
+sessions.sqlite-shm
+sessions.sqlite-wal
+uploads/
+.env
+*.log
+.DS_Store

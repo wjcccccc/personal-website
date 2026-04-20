@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CHEN, WeiPo 的個人網站</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <!-- NAV -->
+  <nav class="navbar">
+    <div class="nav-brand">CHEN, WeiPo</div>
+    <div class="nav-links">
+      <a href="#profile">關於我</a>
+      <a href="#guestbook">留言板</a>
+    </div>
+    <div class="nav-auth" id="nav-auth">
+      <button class="btn btn-outline" onclick="openModal('login-modal')">登入</button>
+      <button class="btn btn-primary" onclick="openModal('register-modal')">註冊</button>
+    </div>
+  </nav>
+
+  <!-- HERO / PROFILE -->
+  <section id="profile" class="profile-section">
+    <div class="container">
+      <div class="profile-card">
+        <div class="profile-avatar-wrapper">
+          <img src="images/owner-avatar.png" alt="CHEN, WeiPo" class="profile-avatar"
+               onerror="this.src='images/default-avatar.svg'" />
+        </div>
+        <div class="profile-info">
+          <h1 class="profile-name">CHEN, WeiPo</h1>
+          <p class="profile-subtitle">NTU 電機工程學系 資訊安全碩士班</p>
+          <div class="profile-bio">
+            <p>嗨！我是陳椲博，目前就讀於國立臺灣大學電機工程學系資訊安全碩士班。</p>
+            <p>研究方向為資訊安全，平時最大的興趣是 DJ。</p>
+          </div>
+          <div class="profile-tags">
+            <span class="tag">Information Security</span>
+            <span class="tag">DJ</span>
+            <span class="tag">Music</span>
+            <span class="tag">NTU EE</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- USER PANEL (shown when logged in) -->
+  <section id="user-panel" class="user-panel hidden">
+    <div class="container">
+      <div class="user-panel-inner">
+        <div class="user-info">
+          <img id="user-avatar-img" src="images/default-avatar.svg" alt="avatar" class="user-avatar-sm" />
+          <span id="user-name-display">訪客</span>
+        </div>
+        <div class="user-actions">
+          <label class="btn btn-outline btn-sm" style="cursor:pointer">
+            更換頭貼
+            <input type="file" id="avatar-upload-input" accept=".jpg,.jpeg,.png" style="display:none" onchange="uploadAvatar(this)" />
+          </label>
+          <button class="btn btn-danger btn-sm" onclick="logout()">登出</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- GUESTBOOK -->
+  <section id="guestbook" class="guestbook-section">
+    <div class="container">
+      <div class="section-header">
+        <h2 class="section-title">留言板</h2>
+        <p class="section-subtitle">歡迎留言！登入後才能發言。</p>
+      </div>
+
+      <!-- Post message form (login required) -->
+      <div id="message-form-area" class="message-form-area hidden">
+        <textarea id="message-input" placeholder="說些什麼吧…" maxlength="1000"></textarea>
+        <div class="form-footer">
+          <span id="char-count" class="char-count">0 / 1000</span>
+          <button class="btn btn-primary" onclick="postMessage()">送出留言</button>
+        </div>
+      </div>
+      <div id="login-prompt" class="login-prompt">
+        <p>請先 <a href="#" onclick="openModal('login-modal'); return false;">登入</a> 或 <a href="#" onclick="openModal('register-modal'); return false;">註冊</a> 後才能留言。</p>
+      </div>
+
+      <!-- Messages list -->
+      <div id="messages-list" class="messages-list">
+        <div class="loading">載入中…</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    <div class="container">
+      <p>© 2026 CHEN, WeiPo ・ NTU Network Security Midterm Project</p>
+    </div>
+  </footer>
+
+  <!-- MODALS -->
+
+  <!-- Login Modal -->
+  <div id="login-modal" class="modal-overlay hidden" onclick="closeModalOnOverlay(event, 'login-modal')">
+    <div class="modal">
+      <button class="modal-close" onclick="closeModal('login-modal')">✕</button>
+      <h2>登入</h2>
+      <form onsubmit="login(event)">
+        <div class="form-group">
+          <label>帳號</label>
+          <input type="text" id="login-username" placeholder="輸入帳號" required autocomplete="username" />
+        </div>
+        <div class="form-group">
+          <label>密碼</label>
+          <input type="password" id="login-password" placeholder="輸入密碼" required autocomplete="current-password" />
+        </div>
+        <div id="login-error" class="form-error hidden"></div>
+        <button type="submit" class="btn btn-primary btn-full">登入</button>
+      </form>
+      <p class="modal-switch">還沒有帳號？<a href="#" onclick="switchModal('login-modal','register-modal'); return false;">立即註冊</a></p>
+    </div>
+  </div>
+
+  <!-- Register Modal -->
+  <div id="register-modal" class="modal-overlay hidden" onclick="closeModalOnOverlay(event, 'register-modal')">
+    <div class="modal">
+      <button class="modal-close" onclick="closeModal('register-modal')">✕</button>
+      <h2>註冊</h2>
+      <form onsubmit="register(event)" enctype="multipart/form-data">
+        <div class="form-group">
+          <label>帳號 <span class="hint">（3–30 字元）</span></label>
+          <input type="text" id="reg-username" placeholder="輸入帳號" required minlength="3" maxlength="30" autocomplete="username" />
+        </div>
+        <div class="form-group">
+          <label>密碼 <span class="hint">（至少 6 字元）</span></label>
+          <input type="password" id="reg-password" placeholder="輸入密碼" required minlength="6" autocomplete="new-password" />
+        </div>
+        <div class="form-group">
+          <label>頭貼 <span class="hint">（選填，jpg / png）</span></label>
+          <input type="file" id="reg-avatar" accept=".jpg,.jpeg,.png" />
+        </div>
+        <div id="reg-error" class="form-error hidden"></div>
+        <button type="submit" class="btn btn-primary btn-full">建立帳號</button>
+      </form>
+      <p class="modal-switch">已有帳號？<a href="#" onclick="switchModal('register-modal','login-modal'); return false;">立即登入</a></p>
+    </div>
+  </div>
+
+  <!-- Toast -->
+  <div id="toast" class="toast hidden"></div>
+
+  <script src="app.js"></script>
+</body>
+</html>

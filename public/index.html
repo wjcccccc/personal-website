@@ -15,6 +15,7 @@
     <div class="nav-brand">CHEN, WeiPo</div>
     <div class="nav-links">
       <a href="#profile">關於我</a>
+      <a href="#ai-fortune">AI 占卜</a>
       <a href="#guestbook">留言板</a>
     </div>
     <div class="nav-auth" id="nav-auth">
@@ -64,6 +65,54 @@
           </label>
           <button class="btn btn-danger btn-sm" onclick="logout()">登出</button>
         </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- AI FORTUNE TELLING -->
+  <section id="ai-fortune" class="ai-section">
+    <div class="container">
+      <div class="section-header">
+        <h2 class="section-title">AI 命運占卜</h2>
+        <p class="section-subtitle">輸入你的資訊，讓 AI 占卜師為你解讀今日命運。</p>
+      </div>
+      <div class="ai-card">
+        <div class="fortune-form">
+          <div class="fortune-fields">
+            <div class="form-group">
+              <label>你的姓名</label>
+              <input type="text" id="fortune-name" placeholder="例如：陳椲博" maxlength="50" />
+            </div>
+            <div class="form-group">
+              <label>星座</label>
+              <select id="fortune-zodiac">
+                <option value="">請選擇星座</option>
+                <option>牡羊座</option><option>金牛座</option><option>雙子座</option>
+                <option>巨蟹座</option><option>獅子座</option><option>處女座</option>
+                <option>天秤座</option><option>天蠍座</option><option>射手座</option>
+                <option>摩羯座</option><option>水瓶座</option><option>雙魚座</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-group">
+            <label>近期發生的事 <span class="hint">（最多 300 字）</span></label>
+            <textarea id="fortune-recent" placeholder="例如：最近在準備期中考，壓力很大，也在煩惱感情問題…" maxlength="300"></textarea>
+            <div class="form-footer" style="margin-top:8px">
+              <span id="fortune-char-count" class="char-count">0 / 300</span>
+              <button class="btn btn-primary" onclick="getFortune()">
+                <span id="fortune-btn-text">✦ 開始占卜</span>
+              </button>
+            </div>
+          </div>
+        </div>
+        <div id="fortune-result" class="fortune-result hidden">
+          <div class="fortune-result-header">
+            <span class="fortune-crystal">🔮</span>
+            <span class="fortune-result-label">今日占卜結果</span>
+          </div>
+          <p id="fortune-output" class="fortune-text"></p>
+        </div>
+        <div id="fortune-error" class="form-error hidden"></div>
       </div>
     </div>
   </section>
@@ -156,3 +205,4 @@
   <script src="app.js"></script>
 </body>
 </html>
+l>

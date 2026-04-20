@@ -14,6 +14,13 @@ document.addEventListener('DOMContentLoaded', async () => {
       document.getElementById('char-count').textContent = `${msgInput.value.length} / 1000`;
     });
   }
+
+  const fortuneRecent = document.getElementById('fortune-recent');
+  if (fortuneRecent) {
+    fortuneRecent.addEventListener('input', () => {
+      document.getElementById('fortune-char-count').textContent = `${fortuneRecent.value.length} / 300`;
+    });
+  }
 });
 
 /* ─── CSRF ─────────────────────────────────────────────────────────────────── */
@@ -311,6 +318,55 @@ function showToast(msg, type = 'success') {
   toast.className = `toast toast-${type}`;
   clearTimeout(toastTimer);
   toastTimer = setTimeout(() => toast.classList.add('hidden'), 3000);
+}
+
+/* ─── AI Fortune Telling ───────────────────────────────────────────────────── */
+async function getFortune() {
+  const name    = document.getElementById('fortune-name').value.trim();
+  const zodiac  = document.getElementById('fortune-zodiac').value;
+  const recent  = document.getElementById('fortune-recent').value.trim();
+  const resultEl = document.getElementById('fortune-result');
+  const outputEl = document.getElementById('fortune-output');
+  const errorEl  = document.getElementById('fortune-error');
+  const btnText  = document.getElementById('fortune-btn-text');
+  const btn      = document.querySelector('#ai-fortune .btn-primary');
+
+  errorEl.classList.add('hidden');
+  resultEl.classList.add('hidden');
+
+  if (!name || !zodiac || !recent) {
+    errorEl.textContent = '請填寫所有欄位';
+    errorEl.classList.remove('hidden');
+    return;
+  }
+
+  btnText.textContent = '占卜中…';
+  btn.disabled = true;
+
+  try {
+    const res = await fetch('/api/ai/fortune', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ name, zodiac, recent }),
+    });
+    const data = await res.json();
+
+    if (!res.ok) {
+      errorEl.textContent = data.error || 'AI 占卜失敗';
+      errorEl.classList.remove('hidden');
+      return;
+    }
+
+    outputEl.textContent = data.fortune;
+    resultEl.classList.remove('hidden');
+    resultEl.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  } catch {
+    errorEl.textContent = '網路錯誤，請稍後再試';
+    errorEl.classList.remove('hidden');
+  } finally {
+    btnText.textContent = '✦ 開始占卜';
+    btn.disabled = false;
+  }
 }
 
 /* ─── Utils ────────────────────────────────────────────────────────────────── */

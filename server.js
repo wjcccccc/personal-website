@@ -9,6 +9,7 @@ const fs = require('fs');
 const crypto = require('crypto');
 const helmet = require('helmet');
 const rateLimit = require('express-rate-limit');
+const Groq = require('groq-sdk');
 
 const db = require('./database');
 
@@ -376,6 +377,60 @@ app.delete('/api/messages/:id', requireLogin, csrfProtect, (req, res) => {
   } catch (err) {
     console.error('Delete error:', err.message);
     res.status(500).json({ error: 'Failed to delete message' });
+  }
+});
+
+// ─── AI Fortune Telling ───────────────────────────────────────────────────────
+const groq = process.env.GROQ_API_KEY
+  ? new Groq({ apiKey: process.env.GROQ_API_KEY })
+  : null;
+
+const aiLimiter = rateLimit({
+  windowMs: 60 * 1000,
+  max: 5,
+  message: { error: 'AI 請求過於頻繁，請稍後再試' },
+  standardHeaders: true,
+  legacyHeaders: false,
+});
+
+app.post('/api/ai/fortune', aiLimiter, async (req, res) => {
+  if (!groq) {
+    return res.status(503).json({ error: 'AI 功能尚未設定 API Key' });
+  }
+
+  const name    = (req.body.name    || '').trim();
+  const zodiac  = (req.body.zodiac  || '').trim();
+  const recent  = (req.body.recent  || '').trim();
+
+  if (!name || !zodiac || !recent) {
+    return res.status(400).json({ error: '請填寫所有欄位' });
+  }
+  if (name.length > 50 || zodiac.length > 20 || recent.length > 300) {
+    return res.status(400).json({ error: '輸入內容過長' });
+  }
+
+  try {
+    const completion = await groq.chat.completions.create({
+      model: 'llama-3.3-70b-versatile',
+      messages: [
+        {
+          role: 'system',
+          content: '你是一位神秘而充滿智慧的占卜師，擅長以詩意、玄妙的繁體中文為人們解讀命運。你的占卜結果包含運勢分析、建議與一句富有哲理的箴言，語氣神秘但不誇張，約 150～200 字。',
+        },
+        {
+          role: 'user',
+          content: `請為以下這位訪客進行今日占卜：\n姓名：${name}\n星座：${zodiac}\n近期狀況：${recent}`,
+        },
+      ],
+      max_tokens: 400,
+      temperature: 0.9,
+    });
+
+    const fortune = completion.choices[0]?.message?.content || '占卜失敗，請再試一次';
+    res.json({ fortune });
+  } catch (err) {
+    console.error('Groq error:', err.message);
+    res.status(500).json({ error: 'AI 占卜失敗，請稍後再試' });
   }
 });
 

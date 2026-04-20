@@ -678,6 +678,112 @@ body::before {
   background: rgba(248,113,113,0.08);
 }
 
+/* ─── AI Fortune Telling ───────────────────────────────────────────────────── */
+.ai-section {
+  padding: 80px 0;
+  background: var(--bg-alt);
+}
+
+.ai-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 32px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.fortune-form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.fortune-fields {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+.fortune-fields input,
+.fortune-fields select {
+  width: 100%;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  color: var(--text);
+  font-family: inherit;
+  font-size: 0.95rem;
+  padding: 12px 14px;
+  box-sizing: border-box;
+  transition: border-color 0.2s;
+}
+
+.fortune-fields input:focus,
+.fortune-fields select:focus {
+  outline: none;
+  border-color: var(--accent);
+}
+
+.fortune-fields select option {
+  background: var(--bg-card);
+}
+
+.fortune-form textarea {
+  width: 100%;
+  min-height: 100px;
+  resize: vertical;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  color: var(--text);
+  font-family: inherit;
+  font-size: 0.95rem;
+  padding: 12px 14px;
+  box-sizing: border-box;
+  transition: border-color 0.2s;
+}
+
+.fortune-form textarea:focus {
+  outline: none;
+  border-color: var(--accent);
+}
+
+.fortune-result {
+  border: 1px solid rgba(139, 92, 246, 0.35);
+  border-radius: 12px;
+  background: linear-gradient(135deg, rgba(139,92,246,0.06), rgba(99,102,241,0.06));
+  padding: 24px;
+}
+
+.fortune-result-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 16px;
+}
+
+.fortune-crystal {
+  font-size: 1.4rem;
+}
+
+.fortune-result-label {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.fortune-text {
+  color: var(--text);
+  font-size: 1rem;
+  line-height: 1.9;
+  white-space: pre-wrap;
+  margin: 0;
+}
+
 /* ─── Utility ──────────────────────────────────────────────────────────────── */
 .hidden { display: none !important; }
 
